@@ -17,22 +17,31 @@ module.exports = {
 
   // ==== COMPLETE THE FOLLOWING (SEE `model.js` TEST SPEC) =====
   listPeople: function () {
-    // returns an array of all people for whom tasks exist
+    let list = [];
+    Object.keys(tasks).forEach((person) => {
+      if (tasks[person].length) list.push(person);
+    });
+    return list;
   },
 
   add: function (name, task) {
-    // saves a task for a given person
+    let hasStatus = task.hasOwnProperty('complete');
+    if (!hasStatus) task.complete = false;
+    if (tasks[name]) tasks[name].push(task);
+    else {
+      tasks[name] = [task];
+    }
   },
 
   list: function (name) {
-    // returns tasks for specified person
+    return tasks[name];
   },
 
   complete: function (name, idx) {
-    // marks a task complete
+    tasks[name][idx].complete = true;
   },
 
   remove: function (name, idx) {
-    // removes a tasks
+    tasks[name].splice(idx, 1);
   },
 };

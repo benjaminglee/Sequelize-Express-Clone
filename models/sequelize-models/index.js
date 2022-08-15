@@ -33,6 +33,37 @@ const Owner = db.define('Owner', {
 Task.belongsTo(Owner);
 Owner.hasMany(Task);
 
+Task.clearCompleted = async function () {
+  await Task.destroy({
+    where: {
+      complete: true,
+    },
+  });
+};
+
+Task.completeAll = async function () {
+  let incomplete = await Task.findAll({
+    where: {
+      complete: false,
+    },
+  });
+  for (let i = 0; i < incomplete.length; i++) {
+    await incomplete[i].update({ complete: true });
+  }
+};
+
+Task.prototype.getTimeRemaining = function () {
+  if (!this.due) return Infinity;
+  return this.due - new Date();
+};
+
+Task.prototype.isOverdue = function () {
+  return this.getTimeRemaining() < 0 && !this.complete ? true : false;
+};
+
+Task.prototype.assignOwner = async function (owner) {
+  return this.setOwner(owner);
+};
 
 //---------^^^---------  your code above  ---------^^^----------
 

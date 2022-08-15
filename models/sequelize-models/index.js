@@ -65,6 +65,25 @@ Task.prototype.assignOwner = async function (owner) {
   return this.setOwner(owner);
 };
 
+Owner.getOwnersAndTasks = async function () {
+  return await Owner.findAll({
+    include: {
+      model: Task,
+    },
+  });
+};
+
+Owner.prototype.getIncompleteTasks = async function () {
+  return await this.getTasks({
+    where: {
+      complete: false,
+    },
+  });
+};
+
+Owner.beforeDestroy((owner) => {
+  if (owner.name === 'Grace Hopper') throw new Error();
+});
 //---------^^^---------  your code above  ---------^^^----------
 
 module.exports = {
